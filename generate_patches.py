@@ -8,6 +8,7 @@ from sklearn.cluster import KMeans
 
 path = "/bifrost2/home/ssanabria/ECOFRAIL/CLARIUS_ECOFRAIL/Raw_data_Albacete"
 pathmask = "/home/estudiante/Desktop/Development_ECOFRAIL/M01_LT_TRANS_BMODE_1bfe0780-8645-450c-a302-110c4a26cd10.pkl"
+path_cordPatches = "/home/estudiante/Desktop/Development_ECOFRAIL"
 
 # for patient in folder_path:
 #     try:
@@ -69,33 +70,9 @@ for centroid in pathCentroid:
     ax.add_patch(patch_rec)
     coord_patches.append([px0,py0,px1,py1])
 coord_patches = np.array(coord_patches)
-np.save(f"{path_raiz}/coordPatches.npy", coord_patches)
+np.save(f"{path_cordPatches}/coordPatches.npy", coord_patches)
 print(coord_patches)
 
 plt.axis('off')
 fig.savefig('patches.png')
 plt.show()
-
-
-
-# """
-# Tamaño del rawdata (384*784) (Imagen de la máscara)
-# Transductor --> #de cristales que tiene dentro --> 192 líneas
-# f = 4MHz
-# Necesito calcular 
-
-
-# Transductor_coord_X = element_index(0...191)*(separación geométrica entre los elementos de los cristales)(pitch)
-# separación geométrica (pitch)del array 0.2mm 
-
-# picht del array = 200um --> comprobar en el código el valor
-# la distacia entre 2px corresponde al periodo del muestreo
-
-# para llegar a 
-# patches de 10mm*10mm
-# calcular el npx que necesito 10mm/pitch
-
-# quiero que me generes 50 patches de c/img de tamaño 10mm, de forma aleatoria va a empezar a buscar patches por toda la imagen dentro del perímetro
-# input --> img = Nlines * NRFsamples
-# output --> array 3D --> patchCollection = Npatches * WidthPatch * HeighPatch (height más grande que el widthpatch)
-# """
