@@ -8,8 +8,6 @@ from sklearn.cluster import KMeans
 
 path = "/bifrost2/home/ssanabria/ECOFRAIL/CLARIUS_ECOFRAIL/Raw_data_Albacete"
 pathmask = "/home/estudiante/Desktop/Development_ECOFRAIL/M01_LT_TRANS_BMODE_1bfe0780-8645-450c-a302-110c4a26cd10.pkl"
-folder_path = os.listdir(path)
-path_raiz = "/home/estudiante/Desktop/Development_ECOFRAIL"
 
 # for patient in folder_path:
 #     try:
