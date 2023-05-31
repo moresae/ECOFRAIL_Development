@@ -1,3 +1,5 @@
 *.png
 *.pkl
 *.npy
+patches.py # patches para una sola imagen
+leernpy.py

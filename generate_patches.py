@@ -4,6 +4,7 @@ import pickle
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 from sklearn.cluster import KMeans
+from skimage import morphology
 
 
 path = "/bifrost2/home/ssanabria/ECOFRAIL/CLARIUS_ECOFRAIL/Raw_data_Albacete"
@@ -23,10 +24,12 @@ path_cordPatches = "/home/estudiante/Desktop/Development_ECOFRAIL"
 #         pass
 
 pitch = (200)*1E-6 #(mm)
-height,width = (10,10)
+height,width = (5,5)
 patch_length = (height)*1E-3 #(mm)
 patch_width = (width)*1E-3 #(mm)
-
+fs = (10)*1E6 #Hz
+sos = (1540) #m/s
+Npatches = 300
 
 # Cargar la imagen desde el archivo .pkl
 with open(pathmask, 'rb') as f:
@@ -47,23 +50,31 @@ for row in range(heightmask):
             px_white.append([row, column])
 px_white = np.array(px_white) # array que contiene todos los px blancos
 
+
+# Aplicar la erosión a la imagen binaria para reducir el tamaño del músculo
+px_reduce = morphology.disk(35)  # Tamaño del área de reducción: 30 píxeles
+mask_reduce = morphology.erosion(mask, px_reduce)
+
+print(f"Tamaño de mask_reduce {mask_reduce.shape}")
+mask_reduce = np.argwhere(mask_reduce == 1)
+
 # circle = plt.Circle((px_white[0][1], px_white[0][0]), 2, color='red',fill=False)
 # ax.add_patch(circle)
-lenght_axial_px = patch_length/pitch
+lenght_axial_px = patch_length/((1/fs)*(sos/2))
 width_px = patch_width/pitch
-Npatches = int(len(px_white)/(lenght_axial_px*width_px))
+# Npatches = int(len(px_white)/(lenght_axial_px*width_px))
 
 print(len(px_white),width_px, lenght_axial_px, Npatches)
 
 # Con el algoritmo de clustering K-means agrupo px blancos y obtengo los centroides de los clústers
-Kpx = KMeans(n_clusters = Npatches).fit(px_white)
+Kpx = KMeans(n_clusters = Npatches).fit(mask_reduce)
 pathCentroid = Kpx.cluster_centers_
 
 coord_patches = []
 # Iterar sobre los centroides 
 for centroid in pathCentroid:
     px0 = int(centroid[1]-width_px/2)
-    py0 = int(centroid[0]-lenght_axial_px/2)
+    py0 = int(centroid[0]-lenght_axial_px/2)    
     px1 = px0 + width_px
     py1 = py0 + lenght_axial_px
     patch_rec = patches.Rectangle((px0,py0), width_px, lenght_axial_px, linewidth = 2, edgecolor = 'r', facecolor = 'none')
@@ -74,5 +85,5 @@ np.save(f"{path_cordPatches}/coordPatches.npy", coord_patches)
 print(coord_patches)
 
 plt.axis('off')
-fig.savefig('patches.png')
+fig.savefig('patches1.png')
 plt.show()
