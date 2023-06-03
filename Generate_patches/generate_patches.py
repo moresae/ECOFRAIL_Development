@@ -97,7 +97,7 @@ sos = 1540
 
 
 
-
+data = []
 for patient in patient_folder:
     patient_path = os.path.join(path, patient)  # Ruta completa de la carpeta del paciente
     mask_path = os.path.join(patient_path, "RawMask_images.npy")
@@ -113,7 +113,7 @@ for patient in patient_folder:
         masknpy = np.load(mask_path)
         print(type(masknpy[0]))
     
-        data = []
+        
         for maskpkl in sorted(masknpy):
             print(maskpkl)
             maskpkl_path = os.path.join(f"{patient_path}/Raw_Mask", maskpkl)
